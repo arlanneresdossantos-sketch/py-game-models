@@ -13,7 +13,11 @@ class Skill(models.Model):
     name = models.CharField(max_length=255, unique=True)
     bonus = models.CharField(max_length=255)
     # Adicionado related_name="skills" conforme a checklist
-    race = models.ForeignKey(Race, on_delete=models.CASCADE, related_name="skills")
+    race = models.ForeignKey(
+        Race,
+        on_delete=models.CASCADE,
+        related_name="skills"
+    )
 
     def __str__(self) -> str:
         return self.name
@@ -32,9 +36,19 @@ class Player(models.Model):
     email = models.EmailField(max_length=255)
     bio = models.CharField(max_length=255)
     # Adicionado related_name="players" conforme a checklist
-    race = models.ForeignKey(Race, on_delete=models.CASCADE, related_name="players")
+    race = models.ForeignKey(
+        Race,
+        on_delete=models.CASCADE,
+        related_name="players"
+    )
     # Adicionado related_name="players" conforme a checklist
-    guild = models.ForeignKey(Guild, on_delete=models.SET_NULL, null=True, blank=True, related_name="players")
+    guild = models.ForeignKey(
+        Guild,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="players"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
