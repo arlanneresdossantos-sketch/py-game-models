@@ -5,19 +5,19 @@ from db.models import Race, Skill, Guild, Player
 
 
 def main() -> None:
-    # 1. Read data from the JSON file
-    with open("players.json", "r") as file:
+    # 1. Ler os dados do arquivo JSON de forma segura com encoding UTF-8
+    with open("players.json", "r", encoding="utf-8") as file:
         players_data = json.load(file)
 
-    # 2. Iterate and seamlessly populate the database
+    # 2. Percorrer os dados e usar get_or_create para evitar duplicados
     for player_name, data in players_data.items():
-        # Get or create the Race
+        # Obter ou criar a Raça (Race)
         race, _ = Race.objects.get_or_create(
             name=data["race"]["name"],
-            defaults={"description": data["race"].get("description")}
+            defaults={"description": data["race"].get("description", "")}
         )
 
-        # Get or create the Race's Skills
+        # Obter ou criar as Habilidades (Skills) da raça
         for skill_data in data["race"].get("skills", []):
             Skill.objects.get_or_create(
                 name=skill_data["name"],
@@ -27,7 +27,7 @@ def main() -> None:
                 }
             )
 
-        # Get or create the Guild (if the player has one)
+        # Obter ou criar a Guilda (Guild) se o jogador fizer parte de uma
         guild = None
         if data.get("guild"):
             guild, _ = Guild.objects.get_or_create(
@@ -35,7 +35,7 @@ def main() -> None:
                 defaults={"description": data["guild"].get("description")}
             )
 
-        # Create or update the Player
+        # Criar ou obter o Jogador (Player) vinculando suas chaves estrangeiras
         Player.objects.get_or_create(
             nickname=player_name,
             defaults={
